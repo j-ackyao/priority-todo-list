@@ -1,24 +1,21 @@
-import {Request, Response} from "express";
-import express, { Application } from 'express';
-const path = require("path");
+import { Application, Request, Response } from "express";
+
 
 export default function initTodoEndpoints(express: Application) {
-    express.get("/todo/", getTasks);
-    express.put("/todo/:str", putTask);
+    express.get("/todos/", getTasks);
+    express.post("/todo/:str", postTask);
     express.delete("/todo/:str", deleteTask);
 }
 
 
 function getTasks(req: Request, res: Response) {
-    let result: any = {test: "test"};
-    // res.status(200).json({result: result});
-    res.status(200).send(result);
+    res.status(501);
 }
 
-function putTask() {
-
+function postTask(req: Request, res: Response) {
+    res.status(501);
 }
 
-function deleteTask() {
-
+function deleteTask(req: Request, res: Response) {
+    res.status(501);
 }

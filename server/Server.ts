@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import http from 'http';
 import cors from "cors";
 import initTodoEndpoints from './endpoints/TodoEndpoints';
+import initUserEndpoints from './endpoints/UserEndpoints';
 
 
 export default class Server {
@@ -27,7 +28,7 @@ export default class Server {
     }
 
     private initRoutes() {
-        // todo app
+        initUserEndpoints(this.express);
         initTodoEndpoints(this.express);
     }
 
