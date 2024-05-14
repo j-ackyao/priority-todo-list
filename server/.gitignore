@@ -6,6 +6,7 @@ node_modules/
 # data files
 data/
 
+privateKey.key
 
 # Native
 *.orig.*

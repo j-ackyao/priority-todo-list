@@ -10,13 +10,24 @@ export default function initUserEndpoints(express: Application) {
 }
 
 function getUsers(req: Request, res: Response) {
-    let userId = req.get("Authorization");
-    res.status(200).send({message: userId});
-    // res.status(501).send();
+    console.log("Server::UserEndpoints - Get request");
+    let token = req.get("Authorization") as string;
+    if (!token) {
+        res.status(400).send();
+        return;
+    }
+    let userId = decode(token);
+    res.status(200).send({userId: userId});
 }
 
 // very simplistic, should consider encryption
+/**
+ * Expects `username` and `password` in request body
+ * 
+ * Responds with a user token inside `token`
+ */
 async function login(req: Request, res: Response) {
+    console.log("Server::UserEndpoints - Login request");
     let username: string = req.body.username;
     let password: string = req.body.password;
     
@@ -37,7 +48,7 @@ async function login(req: Request, res: Response) {
         res.status(401).send();
         return;
     }
-    res.status(200).send(encode(userId));
+    res.status(200).send({"token": encode(userId)});
 }
 
 

@@ -3,7 +3,12 @@ import http from 'http';
 import cors from "cors";
 import initTodoEndpoints from './endpoints/TodoEndpoints';
 import initUserEndpoints from './endpoints/UserEndpoints';
+import { join } from "path";
+import { ensureFile, existsSync, writeFile } from "fs-extra";
 
+export const KEY_PATH = join(__dirname, "/privateKey.key");
+export const USERS_PATH = join(__dirname, "/data/users.json");
+export const TODOS_PATH = join(__dirname, "/data/todos.json");
 
 export default class Server {
     private readonly port: number;
@@ -16,8 +21,22 @@ export default class Server {
         this.express = express();
         this.server = undefined;
 
+        this.initFiles();
+
         this.initMiddleware();
         this.initRoutes();
+    }
+
+    private initFiles() {
+        if (!existsSync(KEY_PATH)) {
+            throw new Error("Private server key (data/privateKey.key) does not exist! Generate a key with the appropriate algorithm.");
+        }
+        if (!existsSync(USERS_PATH)) {
+            writeFile(USERS_PATH, "{}");
+        }
+        if (!existsSync(TODOS_PATH)) {
+            writeFile(TODOS_PATH, "{}");
+        }
     }
 
     private initMiddleware() {

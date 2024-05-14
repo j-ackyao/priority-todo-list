@@ -1,28 +1,19 @@
-import { Application, Request, Response } from "express";
-// import { genSalt } from "bcrypt";
 import { readFile, writeFile } from "fs";
-import { ensureFile, readFileSync } from "fs-extra";
+import { readFileSync } from "fs-extra";
 import { sign, verify } from "jsonwebtoken";
-import { join } from "path";
-
-
-const KEY = readFileSync(__dirname + "/privateKey.key");
-
-// temporary solution to store in json file
-const USERS = join(__dirname, "../data/users.json");
+import { USERS_PATH, KEY_PATH } from "../Server";
 
 
 // consider hashing in future and different data struct
 
 // resolves with userid if authenticated
 export function authenticate(username: string, password: string): Promise<string> {
-    ensureFile(USERS);
     return new Promise ((resolve, reject) => {
-        readFile(USERS, "utf8", (err, data) => {
+        readFile(USERS_PATH, "utf8", (err, data) => {
             // temp err handling
             if (err) {
                 if (err.code === "ENOENT") {
-                    writeFile(USERS, "{}", () => {});
+                    writeFile(USERS_PATH, "{}", () => {});
                     return "";
                 } else {
                     throw err;
@@ -47,12 +38,21 @@ export function authenticate(username: string, password: string): Promise<string
 }
 
 // should consider expiration time
-export function encode(obj: any) { 
-    let token = sign(obj, KEY, {algorithm: "RS256"});
+export function encode(obj: any): string { 
+    let token = sign(obj, readFileSync(KEY_PATH), {algorithm: "RS256"});
     return token;
 }
 
-export function decode(token: string) {
-    let obj = verify(token, KEY);
-    return obj;
+/**
+ * @param token A valid JSON Web Token
+ * @returns Decoded contents as string, else undefined
+ */
+export function decode(token: string): string | undefined {
+    let obj;
+    try {
+        obj = verify(token, readFileSync(KEY_PATH));
+    } catch (err) {
+        return undefined;
+    }
+    return obj as string;
 }
