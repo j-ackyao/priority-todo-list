@@ -10,8 +10,9 @@ export default function initUserEndpoints(express: Application) {
 }
 
 function getUsers(req: Request, res: Response) {
-    // res.send({message: "hello"});
-    res.status(501).send();
+    let userId = req.get("Authorization");
+    res.status(200).send({message: userId});
+    // res.status(501).send();
 }
 
 // very simplistic, should consider encryption

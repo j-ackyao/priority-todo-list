@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, Alert, View, SafeAreaView, Image, Button, StatusBar } from 'react-native';
+import "react-native-reanimated"; // to fix the navigation after expo upgraded to sdk 51
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

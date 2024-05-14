@@ -7,13 +7,11 @@ export default function Home() {
     // for some reason, defined as never, so specify type as any
     return (
         <View style={styles.home}>
-            <TouchableOpacity onLongPress={() => Alert.alert("yep that's me", undefined, [{text:"awesome"}])}>
-                <Image style={styles.titleImage} blurRadius={10} source={{
-                width: 200,
-                height: 150,
-                uri: "https://j-ackyao.github.io/static/media/me2.d03bb49dbc2050cab51a.jpg"}} />
+            <TouchableOpacity onLongPress={() => Alert.alert("awesome easter egg", undefined, [{text:"awesome"}])}>
+                <Image style={styles.titleImage} source={{
+                uri: "https://png.pngtree.com/png-vector/20191129/ourmid/pngtree-office-checklist-icon-business-checklist-survey-test-icon-png-image_2047566.jpg"}} />
             </TouchableOpacity>
-            <Text style={styles.title}>Jack's App</Text>
+            <Text style={styles.title}>Priority Todo list</Text>
             <View style={{paddingTop: 100}}/>
             <ScreenList />
         </View>
@@ -27,8 +25,6 @@ function ScreenList() {
         <View style={styles.screenList}>
             <Text style={styles.screenTitle} onPress={() => {navigation.navigate("Todo")}}>todo list</Text>
             <Text style={styles.screenTitle} onPress={() => {navigation.push("Test")}}>test</Text>
-            <Text style={styles.screenTitle} onPress={() => {navigation.push("Home")}}>awesome dupe glitch</Text>
-            
         </View>
     )
 }
@@ -46,7 +42,9 @@ const styles = StyleSheet.create({
         fontWeight: "400"
     },
     titleImage: {
-        borderRadius: 10
+        borderRadius: 10,
+        width: 150,
+        height: 150
     },
     screenList: {
         gap: 20,
