@@ -1,57 +1,105 @@
 import { Application, Request, Response } from "express";
+import { authUser, generateUserToken, decodeUserToken, createUser } from "./UserUtils";
 
-import { authenticate, encode, decode } from "./UserAuth";
+export default function initUsersEndpoints(express: Application) {
+    // testing purposes, temporary
+    express.get("/genId/", (req, res) => {
+        console.log("test gen id");
+        try {
+            res.send(generateUserToken(authUser("test", "test")));
+        } catch(err) {
+            console.log(err);
+        }
+    });
+    express.get("/verId/:token", (req, res) => {
+        console.log("test ver id");
+        try {
+            res.send(decodeUserToken(req.params.token));
+        } catch (err) {
+            res.status(401).send(err);
+        }
+        
+    });
 
-
-export default function initUserEndpoints(express: Application) {
-    express.get("/users/", getUsers);
-    express.post("/user/", login);
-    express.delete("/user/", deleteUser);
-}
-
-function getUsers(req: Request, res: Response) {
-    console.log("Server::UserEndpoints - Get request");
-    let token = req.get("Authorization") as string;
-    if (!token) {
-        res.status(400).send();
-        return;
-    }
-    let userId = decode(token);
-    res.status(200).send({userId: userId});
+    express.post("/login/", login);
+    express.post("/verify/", verify);
+    express.post("/users/", registerUser);
+    express.delete("/users/", deleteUser);
 }
 
 // very simplistic, should consider encryption
 /**
  * Expects `username` and `password` in request body
  * 
- * Responds with a user token inside `token`
+ * Responds with a user token under `token`
  */
 async function login(req: Request, res: Response) {
-    console.log("Server::UserEndpoints - Login request");
+    console.log("Server::UsersEndpoints - Login request");
+    let username: string = req.body.username;
+    let password: string = req.body.password;
+
+    if (!username || !password) {
+        res.sendStatus(400);
+        return;
+    }
+
+    try {
+        let userId: string = authUser(username, password);
+        res.status(200).send({"token": generateUserToken(userId)});
+    } catch (err) {
+        res.status(401).send(err);
+    }
+}
+
+/**
+ * Expects `username` and `password` in request body
+ * 
+ * Responds with a userId token under `userId`
+ */
+async function registerUser(req: Request, res: Response) {
+    console.log("Server::UsersEndpoints - Register request");
     let username: string = req.body.username;
     let password: string = req.body.password;
     
     if (!username || !password) {
-        res.status(400).send();
+        res.sendStatus(400);
         return;
     }
 
-    let userId: string = "";
-    
-    await authenticate(username, password).then(val => {
-        userId = val;
-    }).catch(err => {
-        // failed to authenticate
-    });
-
-    if (!userId) {
-        res.status(401).send();
+    try {
+        let userId: string = createUser(username, password);
+        res.status(200).send({"userId": userId});
+    } catch (err) {
+        res.status(409).send(err);
         return;
     }
-    res.status(200).send({"token": encode(userId)});
 }
 
 
+/**
+ * Expects `token` in request body
+ * 
+ * Responds with userId under `userId` if token is valid, error otherwise
+ */
+
+function verify(req: Request, res: Response) {
+    console.log("Server::UsersEndpoints - Verify request");
+    let token: string = req.body.token;
+
+    if (!token) {
+        res.sendStatus(400);
+        return;
+    }
+
+    try {
+        let userId: string = decodeUserToken(token);
+        res.status(200).send({userId: userId});
+    } catch (err) {
+        res.status(401).send(err);
+    }
+}
+
+// todo
 function deleteUser(req: Request, res: Response) {
-    res.status(501).send();
+    res.sendStatus(501);
 }

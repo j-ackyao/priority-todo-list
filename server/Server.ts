@@ -1,14 +1,16 @@
 import express, { Application } from 'express';
 import http from 'http';
 import cors from "cors";
-import initTodoEndpoints from './endpoints/TodoEndpoints';
-import initUserEndpoints from './endpoints/UserEndpoints';
+import initTodosEndpoints from './endpoints/TodosEndpoints';
+import initUsersEndpoints from './endpoints/UserEndpoints';
 import { join } from "path";
-import { ensureFile, existsSync, writeFile } from "fs-extra";
+import { existsSync, writeFile } from "fs-extra";
 
 export const KEY_PATH = join(__dirname, "/privateKey.key");
 export const USERS_PATH = join(__dirname, "/data/users.json");
 export const TODOS_PATH = join(__dirname, "/data/todos.json");
+
+
 
 export default class Server {
     private readonly port: number;
@@ -47,8 +49,8 @@ export default class Server {
     }
 
     private initRoutes() {
-        initUserEndpoints(this.express);
-        initTodoEndpoints(this.express);
+        initUsersEndpoints(this.express);
+        initTodosEndpoints(this.express);
     }
 
     public start(): Promise<void> {
