@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ReactElement, Children } from 'react';
 
 
-export default function NavigationBar(props: {components: ReactElement[], children?: any, style?: any}) {
+export default function NavigationBar(props: {components?: ReactElement[], children?: any, style?: any}) {
     const top: number = useSafeAreaInsets().top;
     const goBack: () => void = useNavigation().goBack;
     const barStyle = StyleSheet.compose(styles.container, {paddingTop: top});
@@ -17,9 +17,9 @@ export default function NavigationBar(props: {components: ReactElement[], childr
                         <Text style={styles.text}>&lt;</Text>
                     </View>
                 </TouchableWithoutFeedback>
-                {props.components.map((c, i) => {
+                {props.components ? props.components.map((c, i) => {
                     return <View key={i.toString()}>{c}</View>
-                })}
+                }) : <></>}
             </View>
             <View>
                 {Children.map(props.children, (c, i) => {

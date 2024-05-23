@@ -12,6 +12,10 @@ interface User {
     password: string
 }
 
+interface Users {
+    [userId: string]: User
+}
+
 // temporary deep compare
 function compareUser(u1: User, u2: User) {
     return (
@@ -29,7 +33,7 @@ export function createUser(username: string, password: string): string {
     let user: User = {username: username, password: password};
     let userId: string = hash(user);
 
-    let users = JSON.parse(readFileSync(USERS_PATH, "utf8"));
+    let users: Users = JSON.parse(readFileSync(USERS_PATH, "utf8"));
     // simple check that also accounts for hash collision, not ideal
     if (users[userId]) {
         throw Error("User already exists");
@@ -48,7 +52,7 @@ export function createUser(username: string, password: string): string {
  * @returns userId if user is found and verified, else throws error
  */
 export function authUser(username: string, password: string): string {
-    let users = JSON.parse(readFileSync(USERS_PATH, "utf8"));
+    let users: Users = JSON.parse(readFileSync(USERS_PATH, "utf8"));
     
     let user: User = {username: username, password: password};
     let userId = hash(user);
@@ -64,7 +68,10 @@ export function authUser(username: string, password: string): string {
  * @returns A JSON Web Token as string
  */
 export function generateUserToken(userId: string): string { 
-    let token = sign({userId: userId}, readFileSync(KEY_PATH), {algorithm: "RS256", expiresIn: USER_TOKEN_DURATION});
+    let token: string = sign({userId: userId}, readFileSync(KEY_PATH), {
+        algorithm: "RS256", 
+        expiresIn: USER_TOKEN_DURATION
+    });
     return token;
 }
 

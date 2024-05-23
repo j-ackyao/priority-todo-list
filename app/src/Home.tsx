@@ -1,42 +1,43 @@
 import { StyleSheet, Text, TouchableOpacity, Alert, View, SafeAreaView, Image, Button, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp, createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import NavigationBar from './NavigationBar';
 
 
 export default function Home() {
     // for some reason, defined as never, so specify type as any
     return (
-        <View style={styles.home}>
-            <TouchableOpacity onLongPress={() => Alert.alert("awesome easter egg", undefined, [{text:"awesome"}])}>
-                <Image style={styles.titleImage} source={{
-                uri: "https://png.pngtree.com/png-vector/20191129/ourmid/pngtree-office-checklist-icon-business-checklist-survey-test-icon-png-image_2047566.jpg"}} />
-            </TouchableOpacity>
-            <Text style={styles.title}>Priority Todo list</Text>
-            <View style={{paddingTop: 100}}/>
-            <ScreenList />
-        </View>
-        
+        <NavigationBar>
+            <View style={styles.home}>
+                <TouchableOpacity onLongPress={() => Alert.alert("awesome easter egg", undefined, [{text:"awesome"}])}>
+                    <Image style={styles.titleImage} source={{
+                    uri: "https://png.pngtree.com/png-vector/20191129/ourmid/pngtree-office-checklist-icon-business-checklist-survey-test-icon-png-image_2047566.jpg"}} />
+                </TouchableOpacity>
+                <Text style={styles.title}>Priority Todo list</Text>
+                <PageList />
+            </View>
+        </NavigationBar>
     )
 }
 
-function ScreenList() {
+function PageList() {
     const navigation: NativeStackNavigationProp<any> = useNavigation<NativeStackNavigationProp<any>>();
     return (
-        <View style={styles.screenList}>
-            <Text style={styles.screenTitle} onPress={() => {navigation.navigate("Todo")}}>todo list</Text>
-            <Text style={styles.screenTitle} onPress={() => {navigation.push("Test")}}>test</Text>
+        <View style={styles.pageList}>
+            
+            <Text style={styles.pages} onPress={() => {navigation.navigate("Todo")}}>My list</Text>
+            {/* <Text style={styles.pages} onPress={() => {navigation.push("Test")}}>test</Text> */}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     home: {
-        flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
-        paddingTop: '33%',
+        marginTop: '33%',
+        gap: 30
         // justifyContent: 'center',
-        },
+    },
     title: {
         fontSize: 40,
         fontWeight: "400"
@@ -46,10 +47,10 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150
     },
-    screenList: {
-        gap: 20,
+    pageList: {
+        gap: 10,
     },
-    screenTitle: {
+    pages: {
         fontSize: 30,
         color: "royalblue",
     }
