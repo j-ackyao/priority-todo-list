@@ -5,9 +5,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Animated from 'react-native-reanimated';
 import RNDateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
-import { SERVER_DOMAIN } from '../temp';
 import { getToken } from '../user/Login';
 const HOURS_ROUND_DECIMALS = 2;
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 // copied from todos endpoint, keep separate (?)
 
@@ -24,7 +25,7 @@ interface Tasks {
 
 function requestAddTask(task: Task): Promise<void> {
     return new Promise(async (resolve, reject) => {
-        fetch(SERVER_DOMAIN + "/todos", {
+        fetch(API_URL + "/todos", {
             method: "POST",
             body: JSON.stringify(task),
             headers: {
@@ -44,7 +45,7 @@ function requestAddTask(task: Task): Promise<void> {
 
 function requestDeleteTask(id: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
-        fetch(SERVER_DOMAIN + "/todos", {
+        fetch(API_URL + "/todos", {
             method: "DELETE",
             body: JSON.stringify({id: id}),
             headers: {
@@ -68,7 +69,7 @@ function requestDeleteTask(id: string): Promise<void> {
 
 function requestGetTasks(): Promise<Tasks> {
     return new Promise(async (resolve, reject) => {
-        fetch(SERVER_DOMAIN + "/todos", {
+        fetch(API_URL + "/todos", {
             method: "GET",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
@@ -80,6 +81,7 @@ function requestGetTasks(): Promise<Tasks> {
             });
         }).catch((err) => {
             Alert.alert("Something went wrong!", "Please try again later");
+            console.log(err);
             reject("Failed to fetch tasks");
         });
     });

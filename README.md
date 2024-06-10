@@ -13,6 +13,6 @@ Still currently in development, but usable
 
 App is still in progress being publish to app stores, but can create development build in `./app` with `eas`. 
 
-<sub>For privacy reasons, a temporary solution involves server details stored in `./app/src/temp.tsx`</sub>
+<sub>If building from source code, there should be an `.env` file in `./app` with `EXPO_PUBLIC_API_URL=DOMAIN`</sub>
 
 Server runs with `yarn start` in `./server`, default port `4321`

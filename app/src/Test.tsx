@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useContext, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, Alert, View, SafeAreaView, Image, Button, StatusBar } from 'react-native';
-import { SERVER_DOMAIN } from './temp'; // temporary solution
 import { getToken } from './user/Login';
+import CONFIG from "react-native-config";
 
 export default function Test() {
     const navigation: NativeStackNavigationProp<any> = useNavigation<NativeStackNavigationProp<any>>();
@@ -11,7 +11,7 @@ export default function Test() {
     const [userToken, setUserToken] = useState("");
 
     function loginQuery() {
-        fetch(SERVER_DOMAIN + "/user", {
+        fetch(CONFIG.API_URL + "/user", {
             method: "POST",
             body: JSON.stringify({
                 username: "test",
@@ -35,7 +35,7 @@ export default function Test() {
     }
 
     function actionQuery() {
-        fetch(SERVER_DOMAIN + "/todos", {
+        fetch(CONFIG.API_URL + "/todos", {
             method: "GET",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
@@ -55,7 +55,7 @@ export default function Test() {
     }
 
     async function testQuery() {
-        fetch(SERVER_DOMAIN + "/todo", {
+        fetch(CONFIG.API_URL + "/todo", {
             method: "POST",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",

@@ -2,11 +2,12 @@ import { StyleSheet, Text, TouchableOpacity, Alert, View, SafeAreaView, Image, B
 import { NavigationHelpersContext, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SERVER_DOMAIN, REQ_HEADERS } from '../temp';
-import { createContext, useContext, useState } from 'react';
+import { useState } from 'react';
 
 // export const AuthContext = createContext("");
 // const LoadContext = createContext(true);
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 // consider persistent memory caching
 export async function getToken(): Promise<string> {
@@ -61,13 +62,13 @@ export default function Login() {
     const [password, onChangePassword] = useState("");
 
     function login() {
-        fetch(SERVER_DOMAIN + "/login", {
+        fetch(API_URL + "/login", {
             method: "POST",
             body: JSON.stringify({
                 username: username,
                 password: password
             }),
-            headers: REQ_HEADERS
+            headers: {'Content-type' : 'application/json; charset=UTF-8'}
         }).then((res) => {
             if (res.ok) {
                 res.json().then((json) => {
@@ -75,7 +76,12 @@ export default function Login() {
                     navigation.navigate("Home");
                 });
             } else {
-                Alert.alert("Login failed", "Username does not exist or password was incorrect");
+                if (res.status == 400) {
+                    Alert.alert("Login failed", `Username does not exist or password was incorrect`);
+                } else {
+                    Alert.alert("Login failed", `Server fault (${res.status})`);
+                }
+                
             }
             onChangePassword("");
         }).catch((err) => {
